@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model, model, models } from "mongoose";
 
 export interface IColumn extends Document {
     name: string;
@@ -40,5 +40,8 @@ const ColumnSchema = new Schema<IColumn>(
   { timestamps: true },
 );
 
-export default mongoose.models.Column || mongoose.model<IColumn>("Column", ColumnSchema)
-// 2:22
+const Column: Model<IColumn> =
+  (models.Column as Model<IColumn>) ||
+  model<IColumn>("Column", ColumnSchema);
+
+export default Column;

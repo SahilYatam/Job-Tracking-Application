@@ -4,13 +4,11 @@ export interface JobApplication {
     position: string;
     location?: string;
     status: string;
-    columnId: string;
-    boardId: string;
-    userId: string;
-    order: number;
     notes?: string;
     salary?: string;
     jobUrl?: string;
+    order: number;
+    columnId?: string;
     tags?: string[];
     description?: string;
 }
