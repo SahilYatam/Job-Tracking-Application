@@ -3,8 +3,10 @@ import { getSession } from "@/lib/auth/auth";
 import { connectDB } from "@/lib/db";
 import { Board } from "@/lib/models";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-async function getBoard(userId: string){
+async function getBoard(userId: string) {
+    "use cache";
 
     await connectDB();
 
@@ -18,19 +20,22 @@ async function getBoard(userId: string){
         },
     });
 
-    if(!boardDoc) return null;
-    const board = JSON.parse(JSON.stringify(boardDoc))
+
+    if (!boardDoc) return null;
+
+    const board = JSON.parse(JSON.stringify(boardDoc));
 
     return board;
 }
 
-export default async function Dashboard() {
+async function DashboardPage() {
     const session = await getSession();
-    const board = await getBoard(session?.user.id ?? "")
-
+    
     if (!session?.user) {
         redirect("/sign-in");
     }
+    const board = await getBoard(session?.user.id ?? "")
+    console.log("DASHBOARD USER ID:", session.user.id);
 
     return (
         <div className="min-h-screen bg-white">
@@ -47,4 +52,12 @@ export default async function Dashboard() {
             </div>
         </div>
     );
+}
+// 3:50
+export default async function Dashboard() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <DashboardPage />
+        </Suspense>
+    )
 }
